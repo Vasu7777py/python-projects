@@ -1,0 +1,7 @@
+Labour_id,First_name,Last_name,DOB,age,Salary,Labour_type,Experence,Passcode
+L0001,Vasu,Subbannavar,28/12/2001,18,45000,A,7,Vasu@47
+L0002,Varshit,Anush,25/01/2000,18,45000,B,7,Ash746
+L0003,Bindu,Subbannavar,17/10/1999,20,50000,B,8,something
+L0004,Kavya,shree.S.L,27/04/2001,18,45000,B,6,Anything
+L0005,Amurtha,D,26/12/2001,18,35000,C,7,Hitler
+L0006,Vineet,K.S,01/12/2001,18,50000,C,6,Badkid
