@@ -1,0 +1,26 @@
+Board:
+<colour source page {https://www.rapidtables.com/web/color/RGB_Color.html}>
+
+ChessPice:
+
+
+
+
+TrackerMovement:
+    setting up of starting position of Board
+        << this is done by group of functions >>
+        (def start_Tracker() ) and (def start_set_up())
+        {None}, {takes: dict, returns:None}
+        <<
+        Tracker is done in the form of python dictinory combined with 2D list.
+        >>here the the data is first sorted in 2D list according to position where it be on the Board.
+        >>and in that list the data of the pice is sorted in dictinory with key elements named ["Colour", "object"]
+        >>here Colour key holds the colour data of the pice  
+        >>and object key holds the object of the pirticular pice present on the board at that position
+        >>
+    
+    Checking the boundry condition (def check_boundry() )
+        {takes: list, returns: list}
+        <<
+        >>this is a function which checks the boundry requriments
+        >>

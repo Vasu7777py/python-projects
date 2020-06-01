@@ -1,0 +1,8 @@
+"#CC00CC",mengenta
+"#009999",cyan
+"#33FF33" lime Green
+"#404040",grey
+"#E0E0E0",light grey
+"#000000",black
+"#FFFFFF",White
+"#3399CC",#sky blue

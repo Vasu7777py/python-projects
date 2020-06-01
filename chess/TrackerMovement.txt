@@ -1,0 +1,457 @@
+import ChessPices
+
+Tracker = [[],[],[],[],[],[],[],[]]
+
+def Start_Tracker():
+    for x in range(8):
+        for y in range(8):
+            Tracker[x].append(None)
+
+def start_set_up():
+    Start_Tracker()
+
+    Default_set = ChessPices.Default_Pice_setup()
+
+    White, Black = Default_set["White"], Default_set["Black"]
+
+    for key in White:
+        obj_postion = White[key]
+        obj = obj_postion[0]
+        position = obj_postion[1]
+        x, y = position[0], position[1]
+        Tracker[x][y] = obj
+
+    for key in Black:
+        obj_postion = Black[key]
+        obj = obj_postion[0]
+        position = obj_postion[1]
+        x, y = position[0], position[1]
+        Tracker[x][y] = obj
+
+# Movement
+def check_boundry(check:list):
+    for values in check:
+        x = values[0]
+        y = values[1]
+        if ( ( (x >= 0) and (x < 8) ) and ( (y >= 0) and (y < 8) ) ):
+            pass
+        else:
+            check.remove(values)
+    return check
+
+# **************************************************************************************************************************
+
+class PawnMovement:
+    def check_spaces(self, curr_position:tuple, Is_moved:bool, Pice_Colour:str):
+        x , y = curr_position[0], curr_position[1]
+        if Pice_Colour == "White":
+            if Is_moved:
+                check = [(x -1, y -1), (x, y -1), (x +1, y -1)]
+                checked = check_boundry(check)
+            else:
+                check = [(x -1, y -1), (x, y -1), (x, y -2), (x +1, y -1)]
+                checked = check_boundry(check)
+        else:
+            if Is_moved:
+                check = [(x -1, y +1), (x, y +1), (x +1, y +1)]
+                checked = check_boundry(check)
+            else:
+                check = [(x -1, y +1), (x, y +1), (x, y +2), (x +1, y +1)]
+                checked = check_boundry(check)
+        posible_moves = self.posible_moves(checked, Pice_Colour)
+        logical_moves = self.logical_moves(posible_moves, Pice_Colour, curr_position)
+
+        return logical_moves
+
+    def posible_moves(self, checked_positions:list, Pice_Colour:str):
+        avaliable_positions = []
+        for values in checked_positions:
+            x , y = values[0], values[1]
+            if Tracker[x][y] != None:
+                pice = Tracker[x][y]
+                if pice.get_ColourOfPice() != Pice_Colour:
+                    avaliable_positions.append((x, y))
+            else:
+                avaliable_positions.append((x, y))
+        return avaliable_positions
+
+    def logical_moves(self, avaliable_positions:list, Pice_Colour:str, curr_position:tuple):
+        logical_moves = []
+        x, y = curr_position[0], curr_position[1]
+        if Pice_Colour == "White":
+            for move in avaliable_positions:
+                # move is tuple in the form of (x, y) 
+                # The command <Tracker[move[0]][move[1]]> gives all info about pice if present there
+                # as the there are two types of values in tracker one if that position is empty or not 
+                # if empty it is stored as nome char 
+                # if a pice is present it is stored as python dictonary
+                pice = Tracker[move[0]][move[1]]
+                if (pice != None):
+                    if ( ( (move == (x -1, y -1) ) or (move == (x +1, y -1) ) ) and (pice.get_ColourOfPice() == "Black") ):
+                        logical_moves.append(move)
+                elif( (move == (x, y -1) ) or (move == (x, y -2) ) ):
+                    logical_moves.append(move)
+        else:
+            for move in avaliable_positions:
+                pice = Tracker[move[0]][move[1]]
+                if (pice != None):
+                    if ( ( (move == (x -1, y +1) ) or (move == (x +1, y +1) ) ) and (pice.get_ColourOfPice() == "white") ):
+                        logical_moves.append(move)
+                elif( (move == (x, y +1) ) or (move == (x, y +2) ) ):
+                    logical_moves.append(move)
+        return logical_moves
+
+# **************************************************************************************************************************
+
+class KnightMovement:
+    def check_spaces(self, curr_position:tuple, Pice_Colour:str):
+        x, y = curr_position[0], curr_position[1]
+        #       up_left,        up_right,     right_up,      right_down,  down_right,  down_left,     left_up,      left_down
+        check = [(x -1, y -2), (x +1, y -2), (x +2, y -1), (x +2, y +1), (x +1, y +2), (x -1, y +2), (x -2, y -1), (x -2, y +1)]
+        checked = check_boundry(check)
+        logical_moves = self.posible_moves(checked, Pice_Colour)
+
+        return logical_moves
+    
+    def posible_moves(self, checked_positions:list, Pice_Colour:str):
+        avaliable_positions = []
+        for values in checked_positions:
+            x , y = values[0], values[1]
+            if Tracker[x][y] != None:
+                pice = Tracker[x][y]
+                if pice.get_ColourOfPice() != Pice_Colour:
+                    avaliable_positions.append((x, y))
+            else:
+                avaliable_positions.append((x, y))
+        return avaliable_positions
+
+# **************************************************************************************************************************
+
+class RookMoment:
+    def check_spaces(self, curr_position:tuple, Pice_Colour:str):
+        up = []
+        right = []
+        down = []
+        left = []
+
+        up_direction = (0, -1)
+        right_direction = (1, 0)
+        down_direction = (0, 1)
+        left_direction = (-1, 0)
+        
+        up = self.condition_check(curr_position, up, up_direction, Pice_Colour)
+        right = self.condition_check(curr_position, right, right_direction, Pice_Colour)
+        down = self.condition_check(curr_position, down, down_direction, Pice_Colour)
+        left = self.condition_check(curr_position, left, left_direction, Pice_Colour)
+
+        logical_moves = []
+        logical_moves = up + right + down + left
+
+        return logical_moves
+    
+    def posible_moves(self, checked_position:tuple, Pice_Colour:str):
+        x, y = checked_position[0], checked_position[1]
+        move = Tracker[x][y]
+        if move == None:
+            return (checked_position, False)
+        elif(move.get_ColourOfPice() != Pice_Colour):
+            return (checked_position, True)
+        else:
+            return (None, True)
+
+    def condition_check(self, start:tuple, data:list, direction:tuple, Pice_Colour:str):
+        state = True
+        tempx, tempy = start[0], start[1]
+        directionx, directiony = direction[0], direction[1]
+        while state:
+            tempx += directionx
+            tempy += directiony
+            temp = [(tempx, tempy)]
+            temp = check_boundry(temp)
+            if len(temp) == 1:
+                temp, obstacal = self.posible_moves(temp[0], Pice_Colour)
+                if temp == None:
+                    state = False
+                elif not obstacal:
+                    data.append(temp)
+                else:
+                    data.append(temp)
+                    state = False
+        return data
+
+# **************************************************************************************************************************
+
+class BishopMoment:
+    def check_spaces(self, curr_position:tuple, Pice_Colour:str):
+        up_right = []
+        down_right = []
+        down_left = []
+        up_left = []
+
+        up_right_direction = (1, -1)
+        down_right_direction = (1, 1)
+        down_left_direction = (-1, 1)
+        up_left_direction = (-1, -1)
+
+        up_right = self.condition_check(curr_position, up_right, up_right_direction, Pice_Colour)
+        down_right = self.condition_check(curr_position, down_right, down_right_direction, Pice_Colour)
+        down_left = self.condition_check(curr_position, down_left, down_left_direction, Pice_Colour)
+        up_left = self.condition_check(curr_position, up_left, up_left_direction, Pice_Colour)
+
+        logical_moves = []
+        logical_moves = up_right + down_right + down_left + up_left
+
+        return logical_moves
+    
+    def posible_moves(self, checked_position:tuple, Pice_Colour:str):
+        x, y = checked_position[0], checked_position[1]
+        move = Tracker[x][y]
+        if move == None:
+            return (checked_position, False)
+        elif(Pice_Colour != move.get_ColourOfPice()):
+            return (checked_position, True)
+        else:
+            return (None, True)
+
+    def condition_check(self, start:tuple, data:list, direction:tuple, Pice_Colour:str):
+        state = True
+        tempx, tempy = start[0], start[1]
+        directionx, directiony = direction[0], direction[1]
+        while state:
+            tempx += directionx
+            tempy += directiony
+            temp = [(tempx, tempy)]
+            temp = check_boundry(temp)
+            if len(temp):
+                temp, obstacal = self.posible_moves(temp[0], Pice_Colour)
+                if temp == None:
+                    state = False
+                elif not obstacal:
+                    data.append(temp)
+                else:
+                    data.append(temp)
+                    state = False
+        return data
+
+# **************************************************************************************************************************
+
+class QueenMoment:
+    def check_spaces(self, curr_position:tuple, Pice_Colour:str):
+        up = []
+        right = []
+        down = []
+        left = []
+        up_right = []
+        down_right = []
+        down_left = []
+        up_left = []
+
+        up_direction = (0, -1)
+        right_direction = (1, 0)
+        down_direction = (0, 1)
+        left_direction = (-1, 0)
+        up_right_direction = (1, -1)
+        down_right_direction = (1, 1)
+        down_left_direction = (-1, 1)
+        up_left_direction = (-1, -1)
+        
+        up = self.condition_check(curr_position, up, up_direction, Pice_Colour)
+        right = self.condition_check(curr_position, right, right_direction, Pice_Colour)
+        down = self.condition_check(curr_position, down, down_direction, Pice_Colour)
+        left = self.condition_check(curr_position, left, left_direction, Pice_Colour)
+        up_right = self.condition_check(curr_position, up_right, up_right_direction, Pice_Colour)
+        down_right = self.condition_check(curr_position, down_right, down_right_direction, Pice_Colour)
+        down_left = self.condition_check(curr_position, down_left, down_left_direction, Pice_Colour)
+        up_left = self.condition_check(curr_position, up_left, up_left_direction, Pice_Colour)
+
+        logical_moves = []
+        logical_moves = up + right + down + left + up_right + down_right + down_left + up_left
+
+        return logical_moves
+
+    def posible_moves(self, checked_position:tuple, Pice_Colour:str):
+        x, y = checked_position[0], checked_position[1]
+        move = Tracker[x][y]
+        if move == None:
+            return (checked_position, False)
+        elif(move.get_ColourOfPice() != Pice_Colour):
+            return (checked_position, True)
+        else:
+            return (None, True)
+
+    def condition_check(self, start:tuple, data:list, direction:tuple, Pice_Colour:str):
+        state = True
+        tempx, tempy = start[0], start[1]
+        directionx, directiony = direction[0], direction[1]
+        while state:
+            tempx += directionx
+            tempy += directiony
+            temp = [(tempx, tempy)]
+            temp = check_boundry(temp)
+            if len(temp):
+                temp, obstacal = self.posible_moves(temp[0], Pice_Colour)
+                if temp == None:
+                    state = False
+                elif not obstacal:
+                    data.append(temp)
+                else:
+                    data.append(temp)
+                    state = False
+        return data
+
+# **************************************************************************************************************************
+
+class KingMoment:
+    def check_spaces(self, curr_position:tuple, Pice_Colour:str):
+        x, y = curr_position[0], curr_position[1]
+        check = [(x, y -1), (x +1, y -1), (x +1, y), (x +1, y +1), (x, y +1), (x -1, y +1), (x -1, y), (x -1, y -1)]
+        checked_position = check_boundry(check)
+
+        posible_moves = self.posible_moves(checked_position, Pice_Colour)
+        logical_moves = self.Would_Be_In_check(posible_moves, Pice_Colour)
+
+        return logical_moves
+
+    def posible_moves(self, checked_positions:list, Pice_Colour:str):
+        posible_positions = []
+        for values in checked_positions:
+            x , y = values[0], values[1]
+            if Tracker[x][y] != None:
+                pice = Tracker[x][y]
+                if pice.get_ColourOfPice() != Pice_Colour:
+                    posible_positions.append((x, y))
+            else:
+                posible_positions.append((x, y))
+        return posible_positions
+
+    def Is_In_check_condition(self, position:tuple, Pice_Colour:str):
+        check_for = ["King", "Pawn", "kinght" , "Rook", "Bishop", "Queen"]
+        for pice in check_for:
+            Is_In_check = self.check_for(pice, position, Pice_Colour)
+            if Is_In_check:
+                break
+        return Is_In_check
+
+    def Would_Be_In_check(self, posible_positions:list, Pice_Colour:str):
+        logical_moves = []
+        for move in posible_positions:
+            condition = self.Is_In_check_condition(move, Pice_Colour)
+            if not(condition):
+                logical_moves.append(move)
+        return logical_moves
+
+    def check_specific_pice(self, direction:list, Pice_Colour:str, pice_type:str, position:tuple):
+        x, y = position[0], position[1]
+
+        for direc in direction:
+            state = True
+            tempx, tempy = x, y
+            directionx, directiony = direc[0], direc[1]
+            while state:
+                tempx += directionx
+                tempy += directiony
+                temp = [(tempx, tempy)]
+                temp = check_boundry(temp)
+                if len(temp) == 1:
+                    Cell = Tracker[tempx][tempy]
+                    if Cell != None:
+                        if ( (Cell.get_ColourOfPice() != Pice_Colour ) and (Cell.get_pice_id() == pice_type) ):
+                            return True
+                        else: state = False
+                else: state = False
+        return False
+
+    def check_for(self, check_for_pice:str, position:tuple, Pice_Colour:str):
+        x, y = position[0], position[1]
+
+        if check_for_pice == "Pawn":
+
+            if Pice_Colour == "White":
+                boundry_check = [(x -1, y -1), (x +1, y -1)]
+                checked = check_boundry(boundry_check)
+                for move in checked:
+                    Cell = Tracker[move[0]][move[1]]
+                    if Cell != None:
+                        if ( (Cell.get_ColourOfPice() == "Black") and (Cell.get_pice_id() == "Pawn") ):
+                            return True
+            else:
+                # for Black side
+                boundry_check = [(x -1, y +1), (x +1, y +1)]
+                checked = check_boundry(boundry_check)
+                for move in checked:
+                    Cell = Tracker[move[0]][move[1]]
+                    if Cell != None:
+                        if ( (Cell.get_ColourOfPice() == "White") and (Cell.get_pice_id() == "Pawn") ):
+                            return True
+        
+        elif check_for_pice == "kinght":
+
+            boundry_check = [(x -1, y -2), (x +1, y -2), (x +2, y -1), (x +2, y +1), (x +1, y +2), (x -1, y +2), (x -2, y -1), (x -2, y +1)]
+            checked = check_boundry(boundry_check)
+
+            for move in checked:
+                Cell = Tracker[move[0]][move[1]]
+                if ( (Cell.get_ColourOfPice() != Pice_Colour ) and (Cell.get_pice_id() == "kinght") ):
+                    return True
+
+        elif check_for_pice == "Rook":
+            direction = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+            result = self.check_specific_pice(direction, Pice_Colour, "Rook", position)
+            return result
+
+        elif check_for_pice == "Bishop":
+            direction = [(1, -1), (1, 1), (-1, 1), (-1, -1)]
+            result = self.check_specific_pice(direction, Pice_Colour, "Bishop", position)
+            return result
+            
+        elif check_for_pice == "Queen":
+            direction = [(0, -1), (1, 0), (0, 1), (-1, 0), (1, -1), (1, 1), (-1, 1), (-1, -1)]
+            result = self.check_specific_pice(direction, Pice_Colour, "Queen", position)
+            return result
+
+        elif check_for_pice == "King":
+            boundry_check = [(x, y -1), (x +1, y -1), (x +1, y), (x +1, y +1), (x, y +1), (x -1, y +1), (x -1, y), (x -1, y -1)]
+            checked = check_boundry(boundry_check)
+
+            for move in checked:
+                Cell = Tracker[move[0]][move[1]]
+                if ( (Cell.get_ColourOfPice() != Pice_Colour ) and (Cell.get_pice_id() == "King") ):
+                    return True
+
+# **************************************************************************************************************************
+
+King = KingMoment()
+Queen = QueenMoment()
+Bishop = BishopMoment()
+Knight = KnightMovement()
+Rook = RookMoment()
+Pawn = PawnMovement()
+
+def Track(position:tuple):
+    x, y = position[0], position[1]
+    pice = Tracker[x][y]
+    if pice.get_pice_id() == None:
+        return (pice.get_pice_id(), False)
+    else:
+        return (pice.get_pice_id(), True)
+
+def find_posible_moves(pice:str, position:tuple):
+    logical_moves = []
+    x, y = position[0], position[1]
+    pice_obj = Tracker[x][y]
+    ColourOfPice = pice_obj.get_ColourOfPice()
+    print(pice_obj)
+    if pice == "Pawn":
+        logical_moves = Pawn.check_spaces(position, pice_obj.Is_moved, ColourOfPice)
+    elif pice == "kinght":
+        logical_moves = Knight.check_spaces(position, ColourOfPice)
+    elif pice == "Rook":
+        logical_moves = Rook.check_spaces(position, ColourOfPice)
+    elif pice == "Bishop":
+        logical_moves = Bishop.check_spaces(position, ColourOfPice)
+    elif pice == "Queen":
+        logical_moves = Queen.check_spaces(position, ColourOfPice)
+    elif pice == "King":
+        logical_moves = King.check_spaces(position, ColourOfPice)
+
+    return logical_moves
