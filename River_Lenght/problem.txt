@@ -1,0 +1,12 @@
+Your given a 2d array of potentially unequal height and widht contaning only 0's and 1's.
+Each represents land, and 1 represents part of a river. 
+A river consists of any number of 1's that are either horizontal or vertically adjacent.
+The number of adjacent 1's forming a river determine a river its size.
+
+ex> 
+[0, 0, 1, 1, 0, 1]
+[0, 1, 1, 0, 1, 1]
+[0, 0, 1, 1, 1, 0]
+[0, 1, 0, 0, 0, 0]
+[0, 1, 0, 0, 0, 0]
+[1, 1, 1, 0, 0, 0]
