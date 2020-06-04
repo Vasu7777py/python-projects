@@ -29,7 +29,7 @@ def main():
                 if ((land[y][x] == 1) or (land[y][x] == 0)):
                     land_flag = True
                 else:
-                    print("Entered land info is not accetible")
+                    print("Entered land info is not a valid entry,\nEnter the correct value : ")
 
     print(land)
 
