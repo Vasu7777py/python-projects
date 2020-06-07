@@ -16,12 +16,11 @@ ex>
 """
 
 import numpy as np
+from os import system
 
-def main():
-    lenght = int(input("Enter the lenght of the land : "))
-    breath = int(input("Enter the breath of the land : "))
-    land = np.ndarray(shape = (lenght, breath), dtype = int)
-    for y in range(lenght):
+def create_Land(length, breath):
+    land = np.ndarray(shape = (length, breath), dtype = int)
+    for y in range(length):
         for x in range(breath):
             land_flag = False
             while not land_flag:
@@ -30,7 +29,32 @@ def main():
                     land_flag = True
                 else:
                     print("Entered land info is not a valid entry,\nEnter the correct value : ")
+    
+    return land
 
+class river:
+    def __init__(self):
+        self.river_land = []
+        self.length = 0
+    
+    def find_river_land(self, land, position:tuple):
+        self.river_land.append(position)
+        self.length += 1
+        direction = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+        for direct in direction:
+            row = position[0] + direct[0]
+            col = position[1] + direct[1]
+            if ((land[row][col] == 1) and ((row, col) not in self.river_land)):
+                return self.find_river_land(land, (row, col))
+
+def search_rivers(land, rivers):
+    pass
+
+def main():
+    length = int(input("Enter the length of the land : "))
+    breath = int(input("Enter the breath of the land : "))
+    land = create_Land(length, breath)
+    system("cls")
     print(land)
 
 if __name__ == "__main__":
