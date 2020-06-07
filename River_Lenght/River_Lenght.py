@@ -70,14 +70,15 @@ def search_rivers(land):
                         river = River()
                         river.find_river_land(land, (row, col))
                         rivers.append(river)
+    return rivers
 
 def main():
     length = int(input("Enter the length of the land : "))
     breath = int(input("Enter the breath of the land : "))
     land = create_Land(length, breath)
     system("cls")
-    search_rivers(land)
-    print(land)
+    rivers = search_rivers(land)
+    print(land, rivers)
 
 if __name__ == "__main__":
     main()
