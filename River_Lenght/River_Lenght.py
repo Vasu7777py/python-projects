@@ -32,7 +32,7 @@ def create_Land(length, breath):
     
     return land
 
-class river:
+class River:
     def __init__(self):
         self.river_land = []
         self.length = 0
@@ -45,16 +45,38 @@ class river:
             row = position[0] + direct[0]
             col = position[1] + direct[1]
             if ((land[row][col] == 1) and ((row, col) not in self.river_land)):
-                return self.find_river_land(land, (row, col))
+                self.find_river_land(land, (row, col))
+    
+    def is_checked(self, position:tuple):
+        if position in self.river_land:
+            return True
+        else:
+            return False
 
-def search_rivers(land, rivers):
-    pass
+def search_rivers(land):
+    rivers = []
+    for row in range(len(land)):
+        for col in range(len(land[row])):
+            if (land[row][col] == 1):
+                if (len(rivers) == 0):
+                    river = River()
+                    river.find_river_land(land, (row, col))
+                    rivers.append(river)
+                else:
+                    for river in rivers:
+                        if river.is_checked((row, col)):
+                            break
+                    else:
+                        river = River()
+                        river.find_river_land(land, (row, col))
+                        rivers.append(river)
 
 def main():
     length = int(input("Enter the length of the land : "))
     breath = int(input("Enter the breath of the land : "))
     land = create_Land(length, breath)
     system("cls")
+    search_rivers(land)
     print(land)
 
 if __name__ == "__main__":
