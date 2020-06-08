@@ -35,11 +35,11 @@ def create_Land(length, breath):
 class River:
     def __init__(self):
         self.river_land = []
-        self.length = 0
+        self.Area = 0
     
     def find_river_land(self, land, position:tuple):
         self.river_land.append(position)
-        self.length += 1
+        self.Area += 1
         direction = [(-1, 0), (0, -1), (1, 0), (0, 1)]
         for direct in direction:
             row = position[0] + direct[0]
@@ -90,7 +90,9 @@ def main():
     land = create_Land(length, breath)
     system("cls")
     rivers = search_rivers(land)
-    print(land, rivers)
+    print(land)
+    for river in rivers:
+        print(river.Area)
 
 if __name__ == "__main__":
     main()
