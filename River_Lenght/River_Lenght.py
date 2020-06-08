@@ -68,20 +68,15 @@ def search_rivers(land):
     for row in range(len(land)):
         for col in range(len(land[row])):
             if (land[row][col] == 1):
-                if (len(rivers) == 0):
+                is_checked = False
+                for river in rivers:
+                    is_checked = river.is_checked((row, col))
+                    if is_checked:
+                        break
+                if not is_checked:
                     river = River()
                     river.find_river_land(land, (row, col))
                     rivers.append(river)
-                else:
-                    is_checked = False
-                    for river in rivers:
-                        is_checked = river.is_checked((row, col))
-                        if is_checked:
-                            break
-                    if not is_checked:
-                        river = River()
-                        river.find_river_land(land, (row, col))
-                        rivers.append(river)
     return rivers
 
 def main():
