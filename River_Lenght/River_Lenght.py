@@ -63,10 +63,12 @@ def search_rivers(land):
                     river.find_river_land(land, (row, col))
                     rivers.append(river)
                 else:
+                    is_checked = False
                     for river in rivers:
-                        if river.is_checked((row, col)):
+                        is_checked = river.is_checked((row, col))
+                        if is_checked:
                             break
-                    else:
+                    if not is_checked:
                         river = River()
                         river.find_river_land(land, (row, col))
                         rivers.append(river)
