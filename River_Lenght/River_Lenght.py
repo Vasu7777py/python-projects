@@ -44,9 +44,19 @@ class River:
         for direct in direction:
             row = position[0] + direct[0]
             col = position[1] + direct[1]
-            if ((land[row][col] == 1) and ((row, col) not in self.river_land)):
-                self.find_river_land(land, (row, col))
+            if River.is_inside_boundry(land, (row, col)):
+                if ((land[row][col] == 1) and ((row, col) not in self.river_land)):
+                    self.find_river_land(land, (row, col))
     
+    @staticmethod
+    def is_inside_boundry(land:np.ndarray, position: tuple):
+        max_row, max_col = land.shape
+        row, col = position
+        if ((row >= max_row) or (col >= max_col)):
+            return False
+        else:
+            return True
+
     def is_checked(self, position:tuple):
         if position in self.river_land:
             return True
