@@ -62,7 +62,7 @@ class River:
     def is_inside_boundry(land:np.ndarray, position: tuple):
         max_row, max_col = land.shape
         row, col = position
-        if ((row >= max_row) or (col >= max_col)):
+        if ((row >= max_row) or (col >= max_col) or (row < 0) or (col < 0)):
             return False
         else:
             return True
