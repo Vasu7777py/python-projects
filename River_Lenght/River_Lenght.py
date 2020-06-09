@@ -21,14 +21,23 @@ from os import system
 def create_Land(length, breath):
     land = np.ndarray(shape = (length, breath), dtype = int)
     for y in range(length):
-        for x in range(breath):
-            land_flag = False
-            while not land_flag:
-                land[y][x] = int(input(f"Enter the info of land {y}, {x} : "))
-                if ((land[y][x] == 1) or (land[y][x] == 0)):
-                    land_flag = True
+        land_flag = False
+        while not land_flag:
+            land_data = input(f"Enter the info of the land : row {y} : ")
+            if ((len(land_data) == breath )):
+                for x in range(len(land_data)):
+                    Area = int(land_data[x])
+                    if ((Area != 1) and (Area != 0)):
+                        print(f"in {Area}")
+                        print(f"The entered info of the row {y} is wrong\ntry again")
+                        break
+                    else:
+                        land[y][x] = Area
                 else:
-                    print("Entered land info is not a valid entry,\nEnter the correct value : ")
+                    land_flag = True
+            else:
+                print("out")
+                print(f"The entered info of the row {y} is wrong\ntry again")
     
     return land
 
