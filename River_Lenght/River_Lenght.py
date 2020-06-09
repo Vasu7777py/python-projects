@@ -10,8 +10,8 @@ ex>
 [0, 0, 1, 1, 0, 1]
 [0, 1, 1, 0, 1, 1]
 [0, 0, 1, 1, 1, 0]
-[0, 1, 0, 0, 0, 0]
-[0, 1, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0]
+[0, 1, 1, 0, 0, 0]
 [1, 1, 1, 0, 0, 0]
 """
 
@@ -33,9 +33,10 @@ def create_Land(length, breath):
     return land
 
 class River:
-    def __init__(self):
+    def __init__(self, land:np.ndarray, position:tuple):
         self.river_land = []
         self.Area = 0
+        self.find_river_land(land, position)
     
     def find_river_land(self, land, position:tuple):
         self.river_land.append(position)
@@ -74,9 +75,7 @@ def search_rivers(land):
                     if is_checked:
                         break
                 if not is_checked:
-                    river = River()
-                    river.find_river_land(land, (row, col))
-                    rivers.append(river)
+                    rivers.append(River(land, (row, col)))
     return rivers
 
 def main():
