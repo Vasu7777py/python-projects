@@ -1,10 +1,12 @@
 
-from threading import Thread
+from threading import Thread, Lock
 from time import sleep
+
+Threadlock = Lock()
 
 class Lift:
 
-    Request = []
+    Requests = []
     Lifts = []
 
     def __init__(self, Number:int, Present_floor = 0):
@@ -21,12 +23,19 @@ class Lift:
         pass
     
     @classmethod
-    def get_request(floor, direction):
-        pass
+    def get_request(cls):
+        Threadlock.acquire()
+        for request in cls.Requests:
+            floor, direction = request
+            for lift in cls.Lifts:
+                Time_Requried = lift.time_requried(floor, direction)
+                if (Time_Requried != None):
+                    lift.set_request(floor, direction, lift)
+        Threadlock.release()
 
     @classmethod
-    def set_request(floor, direction, lift:Lift):
-        pass
+    def set_request(cls, floor, direction, lift:Lift):
+        lift.Request_list.append((floor, direction))
 
     def pick_up(self):
         pass
