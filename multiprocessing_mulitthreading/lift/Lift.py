@@ -22,7 +22,6 @@ class Lift:
         self.Direction = None
 
     def time_requried(self, floor, direction):
-        #return_val = None
         Threadlock.acquire()
         if (floor > self.Present_floor):
             if self.Running:
