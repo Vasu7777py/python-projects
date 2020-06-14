@@ -58,6 +58,7 @@ class Lift:
     
     @classmethod
     def get_request(cls):
+        Processed_request = []
         Threadlock.acquire()
         Requests = cls.Requests
         cls.Requests.clear()
@@ -66,9 +67,9 @@ class Lift:
             floor, direction = request
             for lift in cls.Lifts:
                 if request not in lift.Request_list:
-                    Time_Requried = lift.time_requried(floor, direction)
-                    if (Time_Requried != None):
-                        lift.set_request(floor, direction, lift)
+                    return_val = lift.time_requried(floor, direction)
+                    Processed_request.append(return_val)
+                    
 
     @classmethod
     def set_request(cls, floor, direction, lift:Lift):
