@@ -37,9 +37,22 @@ class Lift:
                     if (floor > self.Destination):
                         floor_diff = (floor - self.Present_floor)
                     else:
-                        floor_diff = ((2 * (self.Destination - floor) + (floor - )))
+                        floor_diff = ((2 * (self.Destination - floor) + (floor - self.Present_floor) ) )
             else:
-                pass
+                floor_diff = (floor - self.Present_floor)
+        elif (floor < self.Present_floor):
+            if self.Running:
+                if (self.Direction == direction):
+                    if (self.Direction == -1):
+                        floor_diff = (self.Present_floor - floor)
+                    else:
+                        floor_diff = ((self.Present_floor - floor) + (2 * (self.Destination - self.Present_floor) ) )
+                elif ((direction == 1) and (self.Direction == -1)):
+                    floor_diff = (self.Present_floor - floor)
+                elif((direction == -1) and (self.Direction == 1)):
+                    floor_diff = ((self.Present_floor - floor) + (2 * (self.Destination - self.Present_floor) ) )
+            else:
+                floor_diff = (self.Present_floor - floor)
         time_req = ((floor_diff * self.speed) + (len(self.Request_list) * self.wait))
         Threadlock.release()
         return (self,time_req)
