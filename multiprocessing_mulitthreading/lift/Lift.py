@@ -26,7 +26,7 @@ class Lift:
     def get_request(cls):
         Threadlock.acquire()
         Requests = cls.Requests
-        cls.Request_list.clear()
+        cls.Requests.clear()
         Threadlock.release()
         for request in Requests:
             floor, direction = request
