@@ -52,6 +52,9 @@ class Lift:
                     floor_diff = ((self.Present_floor - floor) + (2 * (self.Destination - self.Present_floor) ) )
             else:
                 floor_diff = (self.Present_floor - floor)
+        elif (floor == self.Present_floor):
+            if self.Running:
+                pass
         time_req = ((floor_diff * self.speed) + (len(self.Request_list) * self.wait))
         Threadlock.release()
         return (self,time_req)
